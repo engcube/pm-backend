@@ -1,0 +1,25 @@
+package PrivateMessageModel
+
+var (
+	SQL_NEW_SESSION          = "insert into t_session(session_id, user_id, insert_time, update_time, is_deleted) values (?,?,?,?,0)"
+	SQL_GET_SESSION          = "select session_id, user_id, update_time from t_session where is_deleted=0 and session_id=?"
+	SQL_DELETE_SESSION       = "update t_session set is_deleted=1, update_time=? where session_id=? and is_deleted=0"
+	SQL_UPDATE_SESSION       = "update t_session set update_time=? where session_id=? and is_deleted=0"
+	SQL_NEW_USER             = "insert into t_user(email, username, password, insert_time, is_deleted, update_time) values (?,?,?,?,0,?)"
+	SQL_GET_USER             = "select user_id, email, username, password, insert_time, update_time from t_user where is_deleted=0 and user_id=?"
+	SQL_GET_USER_BY_EMAIL    = "select user_id, email, username, password, insert_time, update_time from t_user where is_deleted=0 and email=?"
+	SQL_DELETE_USER          = "update t_user set is_deleted=1, update_time=? where user_id=? and is_deleted=0"
+	SQL_UPDATE_USERNAME      = "update t_user set username=?, update_time=? where user_id=? and is_deleted=0"
+	SQL_UPDATE_USER_PASSWORD = "update t_user set password=?, update_time=? where user_id=? and is_deleted=0"
+	SQL_GET_FRIENDS          = "select friend_id, friend_user_id, nickname from t_friend where is_deleted=0 and user_id=?"
+	SQL_ADD_FRIEND           = "insert into t_friend (user_id, friend_user_id, nickname, insert_time, is_deleted) values (?,?,?,?,0)"
+	SQL_DELETE_FRIEND        = "update t_friend set is_deleted=1, update_time=? where is_deleted=0 and friend_id=?"
+	SQL_GET_FRIEND           = "select friend_id from t_friend where is_deleted=0 and user_id=? and friend_user_id=?"
+	SQL_GET_MESSAGE_RECIEVED = "select message_id, user_id, to_user_id, context, is_viewed, insert_time, update_time from t_message where is_deleted=0 and to_user_id=? order by message_id "
+	SQL_GET_MESSAGE_SENT     = "select message_id, user_id, to_user_id, context, is_viewed, insert_time, update_time from t_message where is_deleted=0 and user_id=? order by message_id "
+	SQL_ADD_MESSAGE          = "insert into t_message(user_id, to_user_id, context, is_viewed, insert_time, is_deleted) values (?,?,?,0,?,0)"
+	SQL_READ_MESSAGE         = "update t_message set is_viewed=1, update_time=? where is_deleted=0 and message_id=?"
+	SQL_DELETE_MESSAGE       = "update t_message set is_deleted=1, update_time=? where is_deleted=0 and message_id=?"
+	SQL_GET_MESSAGE          = "select message_id, user_id, to_user_id, context, is_viewed, insert_time, update_time from t_message where is_deleted=0 and message_id=?"
+	SQL_GET_FRIENDSHIP       = "select friend_id from t_friend where is_deleted=0 and user_id=? and friend_user_id=?"
+)
