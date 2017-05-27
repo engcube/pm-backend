@@ -20,6 +20,11 @@
 
 - 支持静态文件
 
+- git管理
+    
+  - 分为release、master、dev分支
+  - 在dev分支做开发，合到master，稳定版本可以合到release
+
 - 可选实现（时间限制，没有实现）
 
   - 单元测试
@@ -33,6 +38,7 @@
   - https接入
   - auth
   - docker化部署
+  - jenkins自动编译
 
 - RESTFUL API
 
