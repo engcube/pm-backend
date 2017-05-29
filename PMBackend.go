@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
+	"flag"
 	"net/http"
-
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/coreos/go-semver/semver"
 	"pm-backend/api-v0.0.1"
@@ -57,7 +57,13 @@ func (mw *SemVerMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 	}
 }
 
+var (
+    server    = flag.String("s", "localhost:9090", "listen server address")
+)
+
 func main() {
+	flag.Parse()
+
 	// 版本控制
 	svmw := SemVerMiddleware{
 		MinVersion: "0.0.1",
@@ -120,5 +126,5 @@ func main() {
 	http.Handle("/api/", http.StripPrefix("/api", api.MakeHandler()))
 	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("./static"))))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(*server, nil))
 }
