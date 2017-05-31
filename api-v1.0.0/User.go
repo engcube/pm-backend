@@ -12,7 +12,7 @@ import (
 
 // GetUserInfo GET /api/#version/user/:id； 获取id用户的信息
 func GetUserInfo(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -98,7 +98,7 @@ func DeleteUser(w rest.ResponseWriter, r *rest.Request) {
 
 // ValidSession 验证session
 func ValidSession(r *rest.Request) (*PrivateMessageModel.User, error) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		return nil, err

@@ -13,5 +13,6 @@ type Friend struct {
 	RecieveMsgs  []Message // 由对方发送的消息
 	UnreadCount  int       // 由对方发送的未读消息
 	TotalCount   int       // 双方所有消息数
+  LastMessage  Message
 }
 

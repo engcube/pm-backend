@@ -76,6 +76,18 @@ func main() {
 
 	api.Use(rest.DefaultDevStack...)
 
+  api.Use(&rest.CorsMiddleware{
+    RejectNonCorsRequests: false,
+    OriginValidator: func(origin string, request *rest.Request) bool {
+      return true
+    },
+    AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+    AllowedHeaders: []string{
+      "Accept", "Content-Type", "X-Custom-Header", "Origin", "Authorization"},
+    AccessControlAllowCredentials: true,
+    AccessControlMaxAge:           3600,
+  })
+
 	router, err := rest.MakeRouter(
 		rest.Get("/status", func(w rest.ResponseWriter, r *rest.Request) {
 			w.WriteJson(statusMw.GetStatus())
