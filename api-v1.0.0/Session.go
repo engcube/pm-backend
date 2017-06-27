@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"pm-backend/model"
 	"pm-backend/public"
+  "strings"
 
 	"fmt"
 
@@ -15,7 +16,11 @@ func ParseSession(sessionID string) (int, error) {
 	if sessionID == "" {
 		return 0, fmt.Errorf("No sessionid in header")
 	}
-	session := PrivateMessageModel.Session{SessionID: sessionID}
+  tmps := strings.Split(sessionID, " ")
+  if len(tmps) != 2 {
+		return 0, fmt.Errorf("Wrong sessionid format in header")
+  }
+	session := PrivateMessageModel.Session{SessionID: tmps[1]}
 	err := session.Get()
 	if err != nil {
 		return 0, err
@@ -25,12 +30,17 @@ func ParseSession(sessionID string) (int, error) {
 
 // GetSession Get /#version/session, 获取会话信息
 func GetSession(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
-	if sessionID == "" {
-		rest.Error(w, "no SessionID in header", http.StatusInternalServerError)
-		return
+  sessionID := r.Header.Get("Authorization")
+  if sessionID == "" {
+		rest.Error(w, "No sessionid in header", PrivateMessageBackendPublic.ERR_SESSION_ERROR)
+    return
 	}
-	session := PrivateMessageModel.Session{SessionID: sessionID}
+  tmps := strings.Split(sessionID, " ")
+  if len(tmps) != 2 {
+		rest.Error(w, "Wrong sessionid format in header", PrivateMessageBackendPublic.ERR_SESSION_ERROR)
+    return
+  }
+	session := PrivateMessageModel.Session{SessionID: tmps[1]}
 	err := session.Get()
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_ERROR)

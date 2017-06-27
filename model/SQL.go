@@ -11,7 +11,7 @@ var (
 	SQL_DELETE_USER          = "update t_user set is_deleted=1, update_time=? where user_id=? and is_deleted=0"
 	SQL_UPDATE_USERNAME      = "update t_user set username=?, update_time=? where user_id=? and is_deleted=0"
 	SQL_UPDATE_USER_PASSWORD = "update t_user set password=?, update_time=? where user_id=? and is_deleted=0"
-	SQL_GET_FRIENDS          = "select friend_id, friend_user_id, nickname from t_friend where is_deleted=0 and user_id=?"
+	SQL_GET_FRIENDS          = "select a.friend_id, a.friend_user_id, b.Username, b.email from t_friend a, t_user b where a.is_deleted=0 and a.user_id=? and a.friend_user_id=b.user_id and b.is_deleted=0"
 	SQL_ADD_FRIEND           = "insert into t_friend (user_id, friend_user_id, nickname, insert_time, is_deleted) values (?,?,?,?,0)"
 	SQL_DELETE_FRIEND        = "update t_friend set is_deleted=1, update_time=? where is_deleted=0 and friend_id=?"
 	SQL_GET_FRIEND           = "select friend_id from t_friend where is_deleted=0 and user_id=? and friend_user_id=?"

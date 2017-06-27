@@ -11,7 +11,7 @@ import (
 
 // GetAllFriends GET /api/#version/user/:id； 获取id用户的信息
 func GetAllFriends(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -28,7 +28,7 @@ func GetAllFriends(w rest.ResponseWriter, r *rest.Request) {
 
 // GetFriend GET /api/#version/friend/:id；获取联系人信息
 func GetFriend(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -46,7 +46,7 @@ func GetFriend(w rest.ResponseWriter, r *rest.Request) {
 
 // AddFriend POST /api/#version/friend；创建新联系人
 func AddFriend(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -69,7 +69,7 @@ func AddFriend(w rest.ResponseWriter, r *rest.Request) {
 
 // DeleteFriend DELETE /api/#version/friend；删除指定联系人
 func DeleteFriend(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)

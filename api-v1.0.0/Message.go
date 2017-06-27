@@ -11,7 +11,7 @@ import (
 
 // GetAllMessageCount GET /api/#version/message/amount；获取私信数目
 func GetAllMessageCount(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -34,7 +34,7 @@ func GetAllMessageCount(w rest.ResponseWriter, r *rest.Request) {
 
 // GetMessageCount /api/#version/message/amount/:id；获取z指定用户的私信数目
 func GetMessageCount(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -58,7 +58,7 @@ func GetMessageCount(w rest.ResponseWriter, r *rest.Request) {
 
 // GetMessages GET /api/#version/message；获取所有私信信息
 func GetMessages(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -75,7 +75,7 @@ func GetMessages(w rest.ResponseWriter, r *rest.Request) {
 
 // GetMessage GET /api/#version/message/:id；获取指定用户的私信
 func GetMessage(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -88,12 +88,19 @@ func GetMessage(w rest.ResponseWriter, r *rest.Request) {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_MESSAGE_GET)
 		return
 	}
+  for _, k := range friends {
+    for _, m := range k.RecieveMsgs {
+      if !m.IsViewed {
+          user.ReadMessage(&m)
+      }
+    }
+  }
 	w.WriteJson(friends)
 }
 
 // SendMessage POST /api/#version/message；发送私信
 func SendMessage(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -116,7 +123,7 @@ func SendMessage(w rest.ResponseWriter, r *rest.Request) {
 
 // DeleteMessage DELETE /api/#version/message；删除指定私信
 func DeleteMessage(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)
@@ -139,7 +146,7 @@ func DeleteMessage(w rest.ResponseWriter, r *rest.Request) {
 
 // ReadMessage PUT /api/#version/message；阅读发送给自己的指定私信
 func ReadMessage(w rest.ResponseWriter, r *rest.Request) {
-	sessionID := r.Header.Get("SessionID")
+	sessionID := r.Header.Get("Authorization")
 	userid, err := ParseSession(sessionID)
 	if err != nil {
 		rest.Error(w, err.Error(), PrivateMessageBackendPublic.ERR_SESSION_PARSE)

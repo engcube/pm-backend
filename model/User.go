@@ -203,8 +203,25 @@ func (u *User) GetFriend(userids []int) ([]Friend, error) {
 		fuid, _ := strconv.ParseInt(string(row[1]), 10, 64)
 		friend.FriendUserID = int(fuid)
 		friend.Nickname = string(row[2])
+		friend.Email = string(row[3])
+    tmpFs, err := u.GetMessages([]int{friend.FriendUserID})
+    if err != nil {
+		    tmpFriends[friend.FriendUserID] = friend
+        continue
+    }
+    if len(tmpFs) == 0 {
+        tmpFriends[friend.FriendUserID] = friend
+        continue
+    }
+    friend.UnreadCount = tmpFs[0].UnreadCount
+    if len(friend.RecieveMsgs) > 0 {
+      friend.LastMessage = friend.RecieveMsgs[0]
+    } else if len(friend.SentMsgs) > 0 {
+      friend.LastMessage = friend.SentMsgs[0]
+    }
 		tmpFriends[friend.FriendUserID] = friend
 	}
+
 	if len(userids) == 0 {
 		friends := make([]Friend, 0)
 		for _, friend := range tmpFriends {

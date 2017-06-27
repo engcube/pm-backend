@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
+	"flag"
 	"net/http"
-
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/coreos/go-semver/semver"
 	"pm-backend/api-v0.0.1"
@@ -57,7 +57,13 @@ func (mw *SemVerMiddleware) MiddlewareFunc(handler rest.HandlerFunc) rest.Handle
 	}
 }
 
+var (
+    server    = flag.String("s", "localhost:9090", "listen server address")
+)
+
 func main() {
+	flag.Parse()
+
 	// 版本控制
 	svmw := SemVerMiddleware{
 		MinVersion: "0.0.1",
@@ -69,20 +75,19 @@ func main() {
 	api.Use(statusMw)
 
 	api.Use(rest.DefaultDevStack...)
-api.Use(&rest.CorsMiddleware{
-     RejectNonCorsRequests: false,
-      OriginValidator: func(origin string, request *rest.Request) bool {
-        fmt.Println(request.PathParams)
-        fmt.Println(request.Method)
-        fmt.Println(request.URL.Path)
-        return true
-      },
-      AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-      AllowedHeaders: []string{
-        "Accept", "Content-Type", "X-Custom-Header", "Origin", "Authorization"},
-      AccessControlAllowCredentials: true,
-      AccessControlMaxAge:           3600,
-    })
+
+  api.Use(&rest.CorsMiddleware{
+    RejectNonCorsRequests: false,
+    OriginValidator: func(origin string, request *rest.Request) bool {
+      return true
+    },
+    AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+    AllowedHeaders: []string{
+      "Accept", "Content-Type", "X-Custom-Header", "Origin", "Authorization"},
+    AccessControlAllowCredentials: true,
+    AccessControlMaxAge:           3600,
+  })
+
 	router, err := rest.MakeRouter(
 		rest.Get("/status", func(w rest.ResponseWriter, r *rest.Request) {
 			w.WriteJson(statusMw.GetStatus())
@@ -135,5 +140,5 @@ api.Use(&rest.CorsMiddleware{
 	http.Handle("/static/", http.StripPrefix("/static", http.FileServer(http.Dir("./static"))))
 	//http.Handle("/app/", http.StripPrefix("/app", http.FileServer(http.Dir("./app"))))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(*server, nil))
 }
